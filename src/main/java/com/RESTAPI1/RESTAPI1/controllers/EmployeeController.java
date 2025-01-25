@@ -3,6 +3,7 @@ package com.RESTAPI1.RESTAPI1.controllers;
 import com.RESTAPI1.RESTAPI1.dto.EmployeeDto;
 import com.RESTAPI1.RESTAPI1.entities.EmployeeEntity;
 import com.RESTAPI1.RESTAPI1.repositories.EmployeeRepositry;
+import com.RESTAPI1.RESTAPI1.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
@@ -17,27 +18,28 @@ public class EmployeeController {
         public String getsecretmessage() {
             return "I am secret";
         }
-
-    private final EmployeeRepositry employeeRepositry;
-    public EmployeeController(EmployeeRepositry employeeRepositry) {
-        this.employeeRepositry = employeeRepositry;
+    private final EmployeeService employeeService;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
 
+
+
     @GetMapping(path = "/{employeeId}")
-        public EmployeeEntity getEmployeeById(@PathVariable(name = "employeeId") Long id ){
-           return employeeRepositry.findById(id).orElse(null);
+        public EmployeeDto getEmployeeById(@PathVariable(name = "employeeId") Long id ){
+           return employeeService.getEmployeeById(id);
         }
 
         @GetMapping
-       public List<EmployeeEntity> getEmployee(@RequestParam(required=false,name="inputAge") Integer age, @RequestParam(required=false) String sortby){
-           return employeeRepositry.findAll();
+       public List<EmployeeDto> getEmployee(@RequestParam(required=false,name="inputAge") Integer age, @RequestParam(required=false) String sortby){
+           return employeeService.getEmployee();
         }
 
         @PostMapping
-        public EmployeeEntity getPostEmployee(@RequestBody EmployeeEntity inputemployee){
+        public EmployeeDto getPostEmployee(@RequestBody EmployeeDto inputemployee){
 
-           return employeeRepositry.save(inputemployee);
+           return employeeService.SaveEmployee(inputemployee);
         }
     @PutMapping
     public String getPutEmployee(){
