@@ -1,6 +1,9 @@
 package com.RESTAPI1.RESTAPI1.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.persistence.Id;
+
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,12 +15,16 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Table(name="employee")
 public class EmployeeEntity {
-    @jakarta.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
     private String name;
     private String email;
     private Integer age;
     private LocalDate dateOfJoining;
+    @JsonProperty("isActive")
     private Boolean isActive;
+
+
+
 }

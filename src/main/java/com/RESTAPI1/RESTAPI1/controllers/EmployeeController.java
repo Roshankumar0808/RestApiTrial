@@ -4,11 +4,16 @@ import com.RESTAPI1.RESTAPI1.dto.EmployeeDto;
 import com.RESTAPI1.RESTAPI1.entities.EmployeeEntity;
 import com.RESTAPI1.RESTAPI1.repositories.EmployeeRepositry;
 import com.RESTAPI1.RESTAPI1.services.EmployeeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/employees")
@@ -27,24 +32,47 @@ public class EmployeeController {
 
 
     @GetMapping(path = "/{employeeId}")
-        public EmployeeDto getEmployeeById(@PathVariable(name = "employeeId") Long id ){
-           return employeeService.getEmployeeById(id);
+        public ResponseEntity<EmployeeDto>  getEmployeeById(@PathVariable(name = "employeeId") Long id ){
+            Optional<EmployeeDto> employeedto=employeeService.getEmployeeById(id);
+           return employeedto.map(employeeDto -> ResponseEntity.ok(employeeDto)).orElse(ResponseEntity.notFound().build());
+//            if(employeedto==null){
+//                return ResponseEntity.notFound().build();
+//            }
+//            return ResponseEntity.ok(employeedto);
         }
 
         @GetMapping
-       public List<EmployeeDto> getEmployee(@RequestParam(required=false,name="inputAge") Integer age, @RequestParam(required=false) String sortby){
-           return employeeService.getEmployee();
+       public ResponseEntity<List<EmployeeDto>> getEmployee(@RequestParam(required=false,name="inputAge") Integer age, @RequestParam(required=false) String sortby){
+           return ResponseEntity.ok(employeeService.getEmployee());
         }
 
         @PostMapping
-        public EmployeeDto getPostEmployee(@RequestBody EmployeeDto inputemployee){
-
-           return employeeService.SaveEmployee(inputemployee);
+        public ResponseEntity<EmployeeDto> getPostEmployee(@RequestBody EmployeeDto inputemployee){
+           EmployeeDto employeeDto=employeeService.SaveEmployee(inputemployee);
+           return new ResponseEntity<>(employeeDto, HttpStatus.CREATED);
         }
-    @PutMapping
-    public String getPutEmployee(){
-        return "Hi Roshan form Put";
+    @PutMapping(path = "/{employeeId}")
+    public ResponseEntity<EmployeeDto> updateemployee(@RequestBody EmployeeDto employeeDto,@PathVariable Long employeeId){
+        return ResponseEntity.ok(employeeService.updateemployee(employeeDto,employeeId));
     }
 
+    @DeleteMapping(path = "/{employeeId}")
+    public ResponseEntity<Boolean> deleteemployee(@PathVariable Long employeeId) {
+        boolean getdel = employeeService.deleteemployee(employeeId);
+        if (getdel) {
+            return ResponseEntity.ok(employeeService.deleteemployee(employeeId));
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 
+    @PatchMapping(path="/{employeeId}")
+    public ResponseEntity<EmployeeDto> patchemployeedata(@RequestBody Map<String,Object> employeeData,@PathVariable Long employeeId){
+        EmployeeDto employeeDto=employeeService.patchemployeedata(employeeData,employeeId);
+        if(employeeDto==null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(employeeDto);
+    }
 }
