@@ -4,6 +4,7 @@ import com.RESTAPI1.RESTAPI1.dto.EmployeeDto;
 import com.RESTAPI1.RESTAPI1.entities.EmployeeEntity;
 import com.RESTAPI1.RESTAPI1.repositories.EmployeeRepositry;
 import com.RESTAPI1.RESTAPI1.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,12 +48,12 @@ public class EmployeeController {
         }
 
         @PostMapping
-        public ResponseEntity<EmployeeDto> getPostEmployee(@RequestBody EmployeeDto inputemployee){
+        public ResponseEntity<EmployeeDto> getPostEmployee(@RequestBody @Valid EmployeeDto inputemployee){
            EmployeeDto employeeDto=employeeService.SaveEmployee(inputemployee);
            return new ResponseEntity<>(employeeDto, HttpStatus.CREATED);
         }
     @PutMapping(path = "/{employeeId}")
-    public ResponseEntity<EmployeeDto> updateemployee(@RequestBody EmployeeDto employeeDto,@PathVariable Long employeeId){
+    public ResponseEntity<EmployeeDto> updateemployee(@RequestBody  @Valid EmployeeDto employeeDto,@PathVariable Long employeeId){
         return ResponseEntity.ok(employeeService.updateemployee(employeeDto,employeeId));
     }
 
@@ -75,4 +76,6 @@ public class EmployeeController {
         }
         return ResponseEntity.ok(employeeDto);
     }
+
+
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.persistence.Id;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -24,6 +25,8 @@ public class EmployeeEntity {
     private LocalDate dateOfJoining;
     @JsonProperty("isActive")
     private Boolean isActive;
+    private Double salarly;
+    private String role;
 
 
 
