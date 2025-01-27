@@ -11,7 +11,10 @@ public class EmployeeRoleValidator implements ConstraintValidator<EmployeeCustom
 
     @Override
     public boolean isValid(String inputrole, ConstraintValidatorContext constraintValidatorContext) {
-       List<String> role=List.of("USER","ADMIN");
+       if(inputrole==null){
+           return false;
+       }
+        List<String> role=List.of("USER","ADMIN");
        return role.contains(inputrole);
     }
 }

@@ -1,5 +1,6 @@
 package com.RESTAPI1.RESTAPI1.services;
 
+import com.RESTAPI1.RESTAPI1.OwnException.ResourceNotFound;
 import com.RESTAPI1.RESTAPI1.dto.EmployeeDto;
 import com.RESTAPI1.RESTAPI1.entities.EmployeeEntity;
 import com.RESTAPI1.RESTAPI1.repositories.EmployeeRepositry;
@@ -22,6 +23,13 @@ public class EmployeeService {
         this.employeeRepositry = employeeRepositry;
         this.modelMapper = modelMapper;
     }
+    public void isExistCheck(Long EmployeeId){
+        boolean isExits=employeeRepositry.existsById(EmployeeId);
+        if(!isExits){
+            throw new ResourceNotFound("Employee with id "+ EmployeeId +" NotFound");
+        }
+
+    }
 
     public Optional<EmployeeDto>  getEmployeeById(Long id) {
         //Optional<EmployeeEntity> employeeEntity= employeeRepositry.findById(id);
@@ -41,6 +49,7 @@ public class EmployeeService {
     }
 
     public EmployeeDto updateemployee(EmployeeDto employeeDto, Long employeeId) {
+        isExistCheck(employeeId);
         EmployeeEntity employeeEntitytypecast=modelMapper.map(employeeDto,EmployeeEntity.class);
         employeeEntitytypecast.setId(employeeId);
         EmployeeEntity employeeEntitytyupdate= employeeRepositry.save(employeeEntitytypecast);
@@ -49,10 +58,7 @@ public class EmployeeService {
     }
 
     public boolean deleteemployee(Long employeeId) {
-        boolean exist=employeeRepositry.existsById(employeeId);
-        if(!exist){
-            return false;
-        }
+        isExistCheck(employeeId);
         employeeRepositry.deleteById(employeeId);
         return true;
     }
@@ -69,6 +75,7 @@ public class EmployeeService {
             return modelMapper.map(employeeRepositry.save(employeeEntity),EmployeeDto.class);
         }
         else{
+            isExistCheck(employeeId);
             return null;
         }
 

@@ -1,5 +1,6 @@
 package com.RESTAPI1.RESTAPI1.controllers;
 
+import com.RESTAPI1.RESTAPI1.OwnException.ResourceNotFound;
 import com.RESTAPI1.RESTAPI1.dto.EmployeeDto;
 import com.RESTAPI1.RESTAPI1.entities.EmployeeEntity;
 import com.RESTAPI1.RESTAPI1.repositories.EmployeeRepositry;
@@ -11,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "/employees")
@@ -35,12 +33,13 @@ public class EmployeeController {
     @GetMapping(path = "/{employeeId}")
         public ResponseEntity<EmployeeDto>  getEmployeeById(@PathVariable(name = "employeeId") Long id ){
             Optional<EmployeeDto> employeedto=employeeService.getEmployeeById(id);
-           return employeedto.map(employeeDto -> ResponseEntity.ok(employeeDto)).orElse(ResponseEntity.notFound().build());
+           return employeedto.map(employeeDto -> ResponseEntity.ok(employeeDto)).orElseThrow(()->new ResourceNotFound("Employee Not Found "+id));
 //            if(employeedto==null){
 //                return ResponseEntity.notFound().build();
 //            }
 //            return ResponseEntity.ok(employeedto);
         }
+
 
         @GetMapping
        public ResponseEntity<List<EmployeeDto>> getEmployee(@RequestParam(required=false,name="inputAge") Integer age, @RequestParam(required=false) String sortby){
