@@ -14,21 +14,22 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFound.class)
-    public ResponseEntity<APIError> getNosuchexcp(ResourceNotFound exception){
+    public ResponseEntity<APIresponse<?>> getNosuchexcp(ResourceNotFound exception){
         APIError apiError=APIError.builder().status(HttpStatus.NOT_FOUND).message(exception.getMessage()).build();
-        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
-
+        return buildapiresponse(apiError);
     }
 
+
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<APIError> getNosuchexcp(Exception exception){
+    public  ResponseEntity<APIresponse<?>> getNosuchexcp(Exception exception){
         APIError apiError=APIError.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).message(exception.getMessage()).build();
-        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildapiresponse(apiError);
 
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<APIError> getNosuchexcp(MethodArgumentNotValidException exception){
+    public  ResponseEntity<APIresponse<?>> getNosuchexcp(MethodArgumentNotValidException exception){
        List<String> errors= exception.getBindingResult()
                 .getAllErrors()
                 .stream()
@@ -37,9 +38,11 @@ public class GlobalExceptionHandler {
 
 
         APIError apiError=APIError.builder().status(HttpStatus.BAD_REQUEST).message("Input Validation Failed").subErrors(errors).build();
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return buildapiresponse(apiError);
 
     }
 
-
+    private ResponseEntity<APIresponse<?>> buildapiresponse(APIError apiError) {
+        return new ResponseEntity<>(new APIresponse<>(apiError),apiError.getStatus());
+    }
 }
